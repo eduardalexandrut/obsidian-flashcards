@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-flashcards",
+	"name": "Obsidian Flashcards",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"description": "A structured flashcard system for Obsidian that uses YAML-defined cards and non-LLM similarity search to evaluate open-ended answers. Track your mastery with detailed history and topic-based quizzes.",
+	"author": "Eduard Alexandru",
+	"authorUrl": "https://github.com/eduardalexandrut",
 	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
 }
