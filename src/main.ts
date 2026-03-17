@@ -1,5 +1,6 @@
 import {App, Editor, MarkdownView, Modal, Notice, Plugin} from 'obsidian';
 import {DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab} from "./settings";
+import {Flashcard, FlashCardTypes} from "./flashcard";
 
 // Remember to rename these classes and interfaces!
 
@@ -10,9 +11,10 @@ export default class MyPlugin extends Plugin {
 		await this.loadSettings();
 
 		// This creates an icon in the left ribbon.
-		this.addRibbonIcon('dice', 'Sample', (evt: MouseEvent) => {
+		this.addRibbonIcon('dice', 'Sample', async (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
+			const cards = await this.indexFlashCards();
+			new Notice('HELLLOOO!');
 		});
 
 		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
@@ -61,12 +63,12 @@ export default class MyPlugin extends Plugin {
 
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			new Notice("Click");
-		});
+		// this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
+		// 	new Notice("Click");
+		// });
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+		// this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 
 	}
 
@@ -79,6 +81,30 @@ export default class MyPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	async indexFlashCards(): Promise<Flashcard[]> {
+		const files = this.app.vault.getMarkdownFiles();
+		const flashCards: Flashcard[] = [];
+
+		files.forEach((file) => {
+			const cache = this.app.metadataCache.getFileCache(file);
+			const frontmatter = cache?.frontmatter;
+
+			if (frontmatter?.type === "flashcard") {
+				flashCards.push({
+					path: file.path,
+					question: frontmatter.question || "Untitled Question",
+					type: frontmatter.card_type === "mcq" ? FlashCardTypes.MULTIPLE_CHOICE : FlashCardTypes.OPEN_ENDED,
+					topics: frontmatter.topics || [],
+					possibleAnswers: frontmatter.options || [],
+					correctAnswer: frontmatter.correct_answer || ""
+				});
+			}
+		});
+
+		console.log(`Found ${flashCards.length} flashcards!`, flashCards);
+		return flashCards;
 	}
 }
 
@@ -96,4 +122,5 @@ class SampleModal extends Modal {
 		const {contentEl} = this;
 		contentEl.empty();
 	}
+
 }
