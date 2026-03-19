@@ -71,10 +71,18 @@ export default class MyPlugin extends Plugin {
 				target: el,
 				props: {
 					question: data.question || "No question provided",
-					topics: data.topics ? [data.topics] : [],
-					correctAnswer: data.correctAnswer || "No correct answer",
-					possibleAnswers: data.possibleAnswers ? data.possibleAnswers : [],
-					references: data.references ? data.references : [],
+					correctAnswer: data.correct_answer || "No correct answer provided",
+					topics: Array.isArray(data.topics) ? data.topics : [],
+					possibleAnswers: Array.isArray(data.options) ? data.options : [],
+					references: Array.isArray(data.references) ? data.references : [],
+					cardType: data.type === "mcq" ? "mcq" : "open",
+					created_at: data.created_at || new Date().toISOString(),
+					onLinkClick: (link: string) => {
+						// Remove [[ and ]] if present
+						const cleanLink = link.replace(/[\[\]]/g, "");
+						this.app.workspace.openLinkText(cleanLink, ctx.sourcePath, true);
+					}
+					//app: this.app
 				}
 			});
 		});
@@ -115,8 +123,8 @@ export default class MyPlugin extends Plugin {
 					question: frontmatter.question || "Untitled Question",
 					type: frontmatter.card_type === "mcq" ? FlashCardTypes.MULTIPLE_CHOICE : FlashCardTypes.OPEN_ENDED,
 					topics: frontmatter.topics || [],
-					possibleAnswers: frontmatter.options || [],
-					correctAnswer: frontmatter.correct_answer || ""
+					options: frontmatter.options || [],
+					correct_answer: frontmatter.correct_answer || ""
 				});
 			}
 		});

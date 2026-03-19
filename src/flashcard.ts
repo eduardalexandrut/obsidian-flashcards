@@ -7,8 +7,8 @@ export interface Flashcard {
 	path: string,
 	type: FlashCardTypes,
 	question: string,
-	possibleAnswers?: string[],
-	correctAnswer: string,
+	options?: string[],
+	correct_answer: string,
 	created_at?: string,
 	topics: string[],
 	references?: string[]
