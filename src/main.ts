@@ -72,6 +72,9 @@ export default class MyPlugin extends Plugin {
 				props: {
 					question: data.question || "No question provided",
 					topics: data.topics ? [data.topics] : [],
+					correctAnswer: data.correctAnswer || "No correct answer",
+					possibleAnswers: data.possibleAnswers ? data.possibleAnswers : [],
+					references: data.references ? data.references : [],
 				}
 			});
 		});

@@ -1,6 +1,10 @@
 <script lang="ts">
-	export let question:string = "";
-	export let topics:any = [];
+	export let question: string = "";
+	export let topics: any = [];
+	export let possibleAnswers: string[] = [];
+	export let correctAnswer: string = "";
+	export let created_at: string = "";
+	export let references: string[] = [];
 
 	export let revealed:boolean = false;
 
