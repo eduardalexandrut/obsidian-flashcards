@@ -1,7 +1,9 @@
 import {App, Editor, MarkdownView, Modal, Notice, Plugin} from 'obsidian';
 import {DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab} from "./settings";
 import {Flashcard, FlashCardTypes} from "./flashcard";
-
+import FlashcardBlock from "./ui/FlashcardBlock.svelte";
+import {parseFlashCardCode} from "./logic/flashcard-logic";
+import { mount } from "svelte";
 // Remember to rename these classes and interfaces!
 
 export default class MyPlugin extends Plugin {
@@ -60,6 +62,19 @@ export default class MyPlugin extends Plugin {
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SampleSettingTab(this.app, this));
+
+		// Add a rendering function for the single flashcard
+		this.registerMarkdownCodeBlockProcessor("flashcard", (source, el, ctx) => {
+			const data = parseFlashCardCode(source);
+
+			mount(FlashcardBlock, {
+				target: el,
+				props: {
+					question: data.question || "No question provided",
+					topics: data.topics ? [data.topics] : [],
+				}
+			});
+		});
 
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
